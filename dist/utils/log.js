@@ -8,6 +8,5 @@ exports.logger = (0, winston_1.createLogger)({
     transports: [
         new winston_1.transports.Console(),
         new winston_1.transports.File({ filename: "error.log", level: "error" }),
-        new winston_1.transports.File({ filename: "combined.log" })
     ]
 });

@@ -4,15 +4,38 @@ import { logger } from "../utils/log";
 
 export class TodoService {
     private prisma = new PrismaClient();
-    createTodo(task: ICreateTodo): Promise<Todo> {
+    // get many
+    async getTodos(): Promise<Todo[]> {
+        return await this.prisma.todo.findMany();
+    }
+    // create
+    async createTodo(task: ICreateTodo): Promise<Todo> {
         try {
-            return this.prisma.todo.create({ data: task });
+            return await this.prisma.todo.create({ data: task });
         } catch (error) {
             logger.error(error);
             throw new Error("Failed to create todo");
         }
     }
-    getTodos(): Promise<Todo[]> {
-        return this.prisma.todo.findMany();
+    // update
+    async updateTodo(id: string, task: Partial<ICreateTodo>): Promise<Todo> {
+        try {
+            return await this.prisma.todo.update({
+                where: { id },
+                data: task
+            });
+        } catch (error) {
+            logger.error(error);
+            throw new Error("Todo not found or failed to update");
+        }
+    }
+    // delete
+    async deleteTodo(id: string): Promise<Todo> {
+        try {
+            return await this.prisma.todo.delete({ where: { id } })
+        } catch (error) {
+            logger.error(error);
+            throw new Error("Todo not found or failed to delete");
+        }
     }
 }

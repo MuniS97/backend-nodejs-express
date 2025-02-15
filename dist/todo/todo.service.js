@@ -7,17 +7,42 @@ class TodoService {
     constructor() {
         this.prisma = new client_1.PrismaClient();
     }
-    createTodo(task) {
+    // get many
+    async getTodos() {
+        return await this.prisma.todo.findMany();
+    }
+    // create
+    async createTodo(task) {
         try {
-            return this.prisma.todo.create({ data: task });
+            return await this.prisma.todo.create({ data: task });
         }
         catch (error) {
             log_1.logger.error(error);
             throw new Error("Failed to create todo");
         }
     }
-    getTodos() {
-        return this.prisma.todo.findMany();
+    // update
+    async updateTodo(id, task) {
+        try {
+            return await this.prisma.todo.update({
+                where: { id },
+                data: task
+            });
+        }
+        catch (error) {
+            log_1.logger.error(error);
+            throw new Error("Todo not found or failed to update");
+        }
+    }
+    // delete
+    async deleteTodo(id) {
+        try {
+            return await this.prisma.todo.delete({ where: { id } });
+        }
+        catch (error) {
+            log_1.logger.error(error);
+            throw new Error("Todo not found or failed to delete");
+        }
     }
 }
 exports.TodoService = TodoService;

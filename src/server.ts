@@ -20,10 +20,10 @@ async function main() {
     app.use(compression())
     app.use(express.json());
 
+    // todo router
     app.use("/api/todo", todoRouter);
 
-    app.get("/api/todo", todoRouter)
-
+    // Для шаблонизации
     app.get("/profile", (req, res) => {
         res.render("profile", {
             user: {
@@ -33,22 +33,22 @@ async function main() {
         });
     });
 
-    app.get("/error", (req, res) => {
-        throw new Error("This is a test error");
-    })
-
+    // Обработка несуществующих маршрутов
     app.all("*", (req, res) => {
         res.status(404).json({
             message: "Route not found",
         });
     });
 
+    // Обработка ошибок
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
         logger.error(err.stack);
         res.status(500).json({
             message: "Internal server error",
         });
     });
+
+    // Запуск сервера
     const PORT = process.env.PORT || 4200;
     app.listen(PORT, () => {
         logger.info(`Server listening on port ${PORT}`);

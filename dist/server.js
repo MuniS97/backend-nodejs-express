@@ -20,8 +20,9 @@ async function main() {
     app.use((0, helmet_1.default)());
     app.use((0, compression_1.default)());
     app.use(express_1.default.json());
+    // todo router
     app.use("/api/todo", todo_controller_1.todoRouter);
-    app.get("/api/todo", todo_controller_1.todoRouter);
+    // Для шаблонизации
     app.get("/profile", (req, res) => {
         res.render("profile", {
             user: {
@@ -30,20 +31,20 @@ async function main() {
             },
         });
     });
-    app.get("/error", (req, res) => {
-        throw new Error("This is a test error");
-    });
+    // Обработка несуществующих маршрутов
     app.all("*", (req, res) => {
         res.status(404).json({
             message: "Route not found",
         });
     });
+    // Обработка ошибок
     app.use((err, req, res, next) => {
         log_1.logger.error(err.stack);
         res.status(500).json({
             message: "Internal server error",
         });
     });
+    // Запуск сервера
     const PORT = process.env.PORT || 4200;
     app.listen(PORT, () => {
         log_1.logger.info(`Server listening on port ${PORT}`);
