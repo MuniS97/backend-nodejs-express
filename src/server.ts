@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import { logger } from "./utils/log";
 import helmet from "helmet";
 import compression from "compression"
+import cors from "cors";
 
 dotenv.config();
 
@@ -19,6 +20,11 @@ async function main() {
     app.use(helmet());
     app.use(compression())
     app.use(express.json());
+    app.use(cors({
+        origin: "*",
+        methods: "GET,POST,PATCH,PUT,DELETE",
+        allowedHeaders: "Content-Type,Authorization"
+    }))
 
     // todo router
     app.use("/api/todo", todoRouter);
